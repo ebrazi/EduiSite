@@ -115,11 +115,24 @@ def session_get(sess, key, default=None):
 
 
 def session_put(sess, key, value):
+    """Update JSON data; when key is user_id also keep the column in sync.
+
+    The sessions.user_id column is used by the context_processor (nav) and by
+    tests; the JSON field is the primary store for all session state.
+    """
     conn = db.get_db()
     data = json.loads(sess.get("data") or "{}")
     data[key] = value
-    conn.execute("UPDATE sessions SET data=? WHERE id=?",
-                 (json.dumps(data), sess["id"]))
+    if key == "user_id":
+        # Keep the denormalized column in sync (NULL when logged out / cleared).
+        conn.execute(
+            "UPDATE sessions SET data=?, user_id=? WHERE id=?",
+            (json.dumps(data), value, sess["id"]),
+        )
+        sess["user_id"] = value
+    else:
+        conn.execute("UPDATE sessions SET data=? WHERE id=?",
+                     (json.dumps(data), sess["id"]))
     sess["data"] = json.dumps(data)
 
 
