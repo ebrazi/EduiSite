@@ -45,6 +45,14 @@ def create_app(database_path=None):
         return dict(session_user_id=uid, csrf_user=csrf)
 
     @app.before_request
+    def _reset_request_session_token():
+        # Ensure per-request isolation when a long-lived app context is shared
+        # (e.g. Flask test clients). Werkzeug reuses the request object.
+        from flask import g
+        g.pop("_req_tok", None)
+        g.pop("_sessions_created", None)
+
+    @app.before_request
     def csrf_protect():
         from flask import abort
         if request.method == "POST":
