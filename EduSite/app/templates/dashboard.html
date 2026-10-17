@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}داشبورد — {{ config.SITE_NAME }}{% endblock %}
+{% block content %}
+<section class="card">
+  <h1>داشبورد</h1>
+  <p class="muted">{{ user.name or 'دانش‌آموز' }} — {{ user.grade or '' }}</p>
+  <p>موجودی کیف پول: <strong>{{ money(balance) }} تومان</strong></p>
+  <p class="actions">
+    <a class="btn btn-primary" href="{{ url_for('user.book') }}">رزرو جلسه جدید</a>
+    <a class="btn" href="{{ url_for('user.wallet') }}">کیف پول</a>
+  </p>
+</section>
+
+<section class="card">
+  <h2>جلسات من</h2>
+  {% if reservations %}
+    <ul class="res-list">
+    {% for item in reservations %}
+      <li class="slot-line">
+        <span>{{ item.date_fa }} — {{ item.slot_fa }}</span>
+        <span class="status status-{{ item.row.status }}">
+          {%- if item.row.status == 'booked' %}رزرو شده
+          {% elif item.row.status == 'cancelled_by_user' %}کنسل‌شده (دانش‌آموز)
+          {% elif item.row.status == 'cancelled_by_teacher' %}کنسل‌شده از طرف مدرس
+          {% else %}{{ item.row.status }}{% endif -%}
+        </span>
+        {% if item.row.refund_amount %}
+        <span class="muted">برگشت: {{ money(item.row.refund_amount) }}</span>
+        {% endif %}
+        {% if item.can_cancel %}
+        <form method="post" action="{{ url_for('user.cancel', reservation_id=item.row.id) }}" class="inline">
+          <input type="hidden" name="csrf" value="{{ csrf_user }}">
+          <button type="submit" class="btn btn-danger">کنسلی (برگشت {{ item.refund_pct }}٪)</button>
+        </form>
+        {% endif %}
+      </li>
+    {% endfor %}
+    </ul>
+  {% else %}
+    <p class="muted">جلسه‌ای ثبت نشده است.</p>
+  {% endif %}
+</section>
+{% endblock %}

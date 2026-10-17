@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - DEV_MODE=0
+      - SECRET_KEY=${SECRET_KEY:-}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-}
+      - MOCK_GATEWAY_SECRET=${MOCK_GATEWAY_SECRET:-}
+      - DATABASE_PATH=/app/instance/edusite.db
+      - SITE_URL=${SITE_URL:-http://localhost:5000}
+      - SESSION_PRICE=${SESSION_PRICE:-500000}
+      - TOPUP_AMOUNTS=${TOPUP_AMOUNTS:-[200000,500000,1000000]}
+      - CANCEL_FULL_HOURS=${CANCEL_FULL_HOURS:-24}
+      - CANCEL_PARTIAL_HOURS=${CANCEL_PARTIAL_HOURS:-6}
+      - CANCEL_PARTIAL_PERCENT=${CANCEL_PARTIAL_PERCENT:-50}
+    volumes:
+      - edusite_data:/app/instance
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:5000/')"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+volumes:
+  edusite_data:

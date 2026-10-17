@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}رزروها — پنل مدرس{% endblock %}
+{% block robots %}noindex, nofollow{% endblock %}
+{% block nav %}<a href="{{ url_for('admin.panel') }}">پنل مدرس</a>{% endblock %}
+{% block content %}
+<section class="card">
+  <h1>رزروها</h1>
+  {% if items %}
+  <div class="table-wrap">
+  <table>
+    <thead>
+      <tr><th>دانش‌آموز</th><th>موبایل</th><th>نسبت</th><th>پایه</th><th>هدف</th>
+      <th>تاریخ</th><th>ساعت</th><th>وضعیت پرداخت</th><th>وضعیت رزرو</th><th></th></tr>
+    </thead>
+    <tbody>
+      {% for item in items %}
+      <tr>
+        <td>{{ item.row.u_name or '—' }}</td>
+        <td dir="ltr">{{ item.row.u_phone }}</td>
+        <td>{{ item.relation_fa }}</td>
+        <td>{{ item.row.u_grade or '—' }}</td>
+        <td>{{ item.row.u_goals or '—' }}</td>
+        <td>{{ item.date_fa }}</td>
+        <td>{{ item.slot_fa }}</td>
+        <td>{{ 'پرداخت‌شده' if item.row.status in ('booked','cancelled_by_user','cancelled_by_teacher') else 'در انتظار' }}</td>
+        <td>
+          {% if item.row.status == 'booked' %}رزرو شده
+          {% elif item.row.status == 'cancelled_by_user' %}کنسل دانش‌آموز
+          {% elif item.row.status == 'cancelled_by_teacher' %}کنسل مدرس
+          {% else %}{{ item.row.status }}{% endif %}
+        </td>
+        <td>
+          {% if item.can_cancel %}
+          <form method="post" action="{{ url_for('admin.cancel_reservation', rid=item.row.id) }}" class="inline">
+            <input type="hidden" name="csrf" value="{{ csrf }}">
+            <button type="submit" class="btn btn-danger">کنسلی مدرس</button>
+          </form>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+  {% else %}
+  <p class="muted">رزروی ثبت نشده است.</p>
+  {% endif %}
+</section>
+{% endblock %}

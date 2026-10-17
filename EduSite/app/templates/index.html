@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero">
+  <h1>رزرو جلسات تدریس آنلاین</h1>
+  <p>زمان‌های آزاد را ببینید، جلسه خود را رزرو کنید و آنلاین پرداخت کنید.</p>
+  <p class="actions">
+    <a class="btn btn-primary" href="{{ url_for('auth.register') }}">ثبت‌نام</a>
+    <a class="btn" href="{{ url_for('auth.login') }}">ورود</a>
+  </p>
+</section>
+
+<section class="info">
+  <h2>بازه‌های تدریس</h2>
+  <ul>
+    <li>۱۵:۳۰ تا ۱۷:۰۰</li>
+    <li>۱۷:۰۰ تا ۱۸:۳۰</li>
+    <li>۱۸:۳۰ تا ۲۰:۰۰</li>
+  </ul>
+</section>
+
+<section class="info">
+  <h2>مراحل استفاده</h2>
+  <ol>
+    <li>ثبت‌نام و تأیید شماره موبایل با کد پیامکی</li>
+    <li>تعیین نسبت صاحب شماره، مقطع و هدف آموزشی</li>
+    <li>انتخاب زمان آزاد از تقویم مدرس</li>
+    <li>پرداخت آنلاین و شارژ خودکار کیف پول</li>
+  </ol>
+</section>
+{% endblock %}

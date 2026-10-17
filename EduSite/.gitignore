@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+.venv/
+instance/
+*.db
+*.db-wal
+*.db-shm
+.env
+
+# Test output and logs
+test_*.txt
+baseline_test_run.txt
+suite_out.txt
+run.log
+debug_*.py
+reproduce_topup.py

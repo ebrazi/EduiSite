@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block robots %}noindex, nofollow{% endblock %}
+{% block content %}
+<section class="card">
+  <h1>درگاه پرداخت آزمایشی</h1>
+  <p>مبلغ: <strong>{{ money(payment.amount) }} تومان</strong></p>
+  <p class="muted">این صفحه فقط در محیط توسعه وجود دارد (درگاه Mock).</p>
+  <form method="post" class="inline">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <button type="submit" name="outcome" value="success" class="btn btn-primary">پرداخت موفق (تست)</button>
+  </form>
+  <form method="post" class="inline">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <button type="submit" name="outcome" value="failed" class="btn btn-danger">پرداخت ناموفق (تست)</button>
+  </form>
+</section>
+{% endblock %}

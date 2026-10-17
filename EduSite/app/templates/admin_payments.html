@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}پرداخت‌ها — پنل مدرس{% endblock %}
+{% block robots %}noindex, nofollow{% endblock %}
+{% block nav %}<a href="{{ url_for('admin.panel') }}">پنل مدرس</a>{% endblock %}
+{% block content %}
+<section class="card">
+  <h1>پرداخت‌ها</h1>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>#</th><th>موبایل</th><th>مبلغ</th><th>وضعیت</th><th>تعداد callback</th></tr></thead>
+    <tbody>
+      {% for p in payments %}
+      <tr>
+        <td>{{ p.id }}</td>
+        <td dir="ltr">{{ p.u_phone }}</td>
+        <td>{{ money(p.amount) }}</td>
+        <td>{{ p.status }}</td>
+        <td>{{ p.callback_count }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<section class="card">
+  <h1>کیف پول کاربران</h1>
+  <div class="table-wrap">
+  <table>
+    <thead><tr><th>نام</th><th>موبایل</th><th>موجودی</th></tr></thead>
+    <tbody>
+      {% for w in wallets %}
+      <tr>
+        <td>{{ w.name or '—' }}</td>
+        <td dir="ltr">{{ w.phone }}</td>
+        <td>{{ money(w.balance) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,19 @@
+﻿{% extends "base.html" %}
+{% block title %}هدف آموزشی — {{ config.SITE_NAME }}{% endblock %}
+{% block content %}
+<section class="card">
+  <h1>هدف آموزشی</h1>
+  <p class="muted">می‌توانید چند مورد را انتخاب کنید.</p>
+  {% if error %}<p class="error">{{ error }}</p>{% endif %}
+  <form method="post" action="{{ url_for('auth.register_goal') }}">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    {% for g in goals %}
+    <label class="radio">
+      <input type="checkbox" name="goal" value="{{ g }}">
+      {{ g }}
+    </label>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary">پایان ثبت‌نام</button>
+  </form>
+</section>
+{% endblock %}

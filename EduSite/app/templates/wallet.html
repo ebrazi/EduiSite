@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block title %}کیف پول — {{ config.SITE_NAME }}{% endblock %}
+{% block content %}
+<section class="card">
+  <h1>کیف پول</h1>
+  <p>موجودی: <strong>{{ money(balance) }} تومان</strong></p>
+  {% if payment_status == 'ok' %}<p class="success">پرداخت با موفقیت انجام شد.</p>{% endif %}
+  {% if payment_status == 'failed' %}<p class="error">پرداخت ناموفق بود.</p>{% endif %}
+  {% if payment_failed %}<p class="error">{{ payment_failed }}</p>{% endif %}
+  <h2>شارژ کیف پول</h2>
+  <form method="post" action="{{ url_for('user.wallet_topup') }}" class="amounts">
+    <input type="hidden" name="csrf" value="{{ csrf_user }}">
+    {% for a in amounts %}
+    <button type="submit" name="amount" value="{{ a }}" class="btn">{{ money(a) }} تومان</button>
+    {% endfor %}
+  </form>
+</section>
+
+<section class="card">
+  <h2>تراکنش‌ها</h2>
+  {% if txns %}
+  <ul class="txns">
+    {% for t in txns %}
+    <li class="slot-line">
+      <span class="{{ 'pos' if t.amount > 0 else 'neg' }}">
+        {{ '+' if t.amount > 0 else '−' }} {{ money(t.amount | abs) }} تومان
+      </span>
+      <span class="muted">
+        {%- if t.kind == 'topup' %}شارژ کیف پول
+        {% elif t.kind == 'session_payment' %}پرداخت جلسه
+        {% elif t.kind == 'refund' %}برگشت وجه
+        {% else %}{{ t.kind }}{% endif -%}
+      </span>
+    </li>
+    {% endfor %}
+  </ul>
+  {% else %}
+  <p class="muted">تراکنشی ثبت نشده است.</p>
+  {% endif %}
+</section>
+{% endblock %}

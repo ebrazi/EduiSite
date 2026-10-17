@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ config.SITE_NAME }} — رزرو جلسات تدریس{% endblock %}</title>
+  <meta name="description" content="{% block description %}رزرو آنلاین جلسات تدریس؛ زمان آزاد را ببینید، رزرو کنید و آنلاین پرداخت کنید.{% endblock %}">
+  <link rel="canonical" href="{{ config.SITE_URL }}{{ request.path }}">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="{{ config.SITE_NAME }}">
+  <meta property="og:title" content="{% block ogtitle %}{{ config.SITE_NAME }}{% endblock %}">
+  <meta property="og:description" content="{% block ogdesc %}رزرو آنلاین جلسات تدریس{% endblock %}">
+  <meta property="og:url" content="{{ config.SITE_URL }}{{ request.path }}">
+  <meta name="robots" content="{% block robots %}index, follow{% endblock %}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="/">{{ config.SITE_NAME }}</a>
+  <nav>
+    {% block nav %}
+    {% set uid = session_user_id %}
+    {% if uid %}
+      <a href="{{ url_for('user.dashboard') }}">داشبورد</a>
+      <a href="{{ url_for('user.book') }}">رزرو جلسه</a>
+      <a href="{{ url_for('user.wallet') }}">کیف پول</a>
+      <form method="post" action="{{ url_for('auth.logout') }}" class="inline">
+        <input type="hidden" name="csrf" value="{{ csrf_user }}">
+        <button type="submit" class="linklike">خروج</button>
+      </form>
+    {% else %}
+      <a href="{{ url_for('auth.login') }}">ورود</a>
+      <a class="btn" href="{{ url_for('auth.register') }}">ثبت‌نام</a>
+    {% endif %}
+    {% endblock %}
+  </nav>
+</header>
+<main>
+{% block content %}{% endblock %}
+</main>
+<footer class="footer">
+  <p>{{ config.SITE_NAME }} — رزرو جلسات تدریس آنلاین</p>
+</footer>
+</body>
+</html>

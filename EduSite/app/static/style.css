@@ -1,0 +1,149 @@
+/* Minimal, Google-like, mobile-first, RTL. System fonts only. */
+* { box-sizing: border-box; }
+html { font-size: 16px; }
+body {
+  margin: 0;
+  font-family: Tahoma, Arial, "Segoe UI", sans-serif;
+  background: #fff;
+  color: #202124;
+  line-height: 1.7;
+}
+a { color: #1a73e8; text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e8eaed;
+}
+.brand { font-weight: 700; color: #202124; font-size: 1.05rem; }
+nav { display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap; }
+nav a { color: #5f6368; }
+nav a:hover { color: #202124; }
+
+main { max-width: 720px; margin: 0 auto; padding: 1rem; }
+.footer { text-align: center; color: #80868b; font-size: 0.8rem; padding: 1.5rem 0; }
+
+h1 { font-size: 1.25rem; font-weight: 600; margin: 0.5rem 0; }
+h2 { font-size: 1rem; font-weight: 600; margin: 0.75rem 0 0.5rem; }
+
+.card {
+  border: 1px solid #e8eaed;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+.muted { color: #5f6368; font-size: 0.9rem; }
+.error { color: #d93025; }
+.success { color: #188038; }
+.dev-note { color: #b06000; background: #fef7e0; padding: 0.35rem 0.6rem; border-radius: 4px; }
+
+.btn {
+  display: inline-block;
+  min-height: 44px;           /* touch target */
+  padding: 0.55rem 1.1rem;
+  border: 1px solid #dadce0;
+  border-radius: 6px;
+  background: #fff;
+  color: #1a73e8;
+  font-family: inherit;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+.btn:hover { background: #f8f9fa; text-decoration: none; }
+.btn-primary { background: #1a73e8; border-color: #1a73e8; color: #fff; }
+.btn-primary:hover { background: #1765cc; }
+.btn-danger { background: #fff; border-color: #dadce0; color: #d93025; }
+.btn-danger:hover { background: #fce8e6; }
+.linklike {
+  background: none; border: none; color: #5f6368; font-family: inherit;
+  cursor: pointer; padding: 0.25rem; min-height: 44px;
+}
+
+input[type="text"], input[type="tel"], input[type="password"] {
+  width: 100%;
+  max-width: 320px;
+  min-height: 44px;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #dadce0;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 1rem;
+}
+input:focus { outline: 2px solid #1a73e8; outline-offset: -1px; }
+label { display: block; margin: 0.75rem 0 0.25rem; }
+label.radio {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  margin: 0.15rem 0;
+  cursor: pointer;
+}
+form button[type="submit"] { margin-top: 1rem; }
+.inline { display: inline; }
+.actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+
+.day { margin-bottom: 1.25rem; }
+.day-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.slots { display: flex; flex-direction: column; gap: 0.5rem; max-width: 340px; }
+.slot {
+  display: block;
+  width: 100%;
+  min-height: 48px;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  border: 1px solid #dadce0;
+  background: #fff;
+  font-family: inherit;
+  font-size: 0.95rem;
+  cursor: pointer;
+  text-align: center;
+}
+.slot.available:hover { border-color: #1a73e8; }
+.slot.disabled {
+  background: #f1f3f4;
+  color: #80868b;
+  border-color: #f1f3f4;
+  cursor: not-allowed;
+}
+.slot-form { max-width: 340px; }
+
+.res-list, .txns { list-style: none; padding: 0; margin: 0; }
+.slot-line {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid #f1f3f4;
+}
+.pos { color: #188038; }
+.neg { color: #d93025; }
+.status { font-size: 0.85rem; padding: 0.1rem 0.5rem; border-radius: 4px; background: #f1f3f4; }
+.status-booked { background: #e6f4ea; color: #188038; }
+.status-cancelled_by_user, .status-cancelled_by_teacher { background: #fce8e6; color: #d93025; }
+.status-pending_payment { background: #fef7e0; color: #b06000; }
+
+.info ul, .info ol { padding-inline-start: 1.25rem; }
+.info li { margin: 0.3rem 0; }
+
+.table-wrap { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 0.85rem; }
+th, td { text-align: right; padding: 0.5rem 0.4rem; border-bottom: 1px solid #f1f3f4; white-space: nowrap; }
+th { color: #5f6368; font-weight: 600; }
+
+@media (min-width: 768px) {
+  .slots { flex-direction: row; max-width: none; }
+  .slot { min-width: 180px; width: auto; }
+  .slot-form { max-width: none; }
+  h1 { font-size: 1.4rem; }
+}

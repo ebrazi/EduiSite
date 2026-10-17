@@ -1,0 +1,18 @@
+﻿{% extends "base.html" %}
+{% block title %}مقطع تحصیلی — {{ config.SITE_NAME }}{% endblock %}
+{% block content %}
+<section class="card">
+  <h1>مقطع تحصیلی</h1>
+  {% if error %}<p class="error">{{ error }}</p>{% endif %}
+  <form method="post" action="{{ url_for('auth.register_grade') }}">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    {% for g in grades %}
+    <label class="radio">
+      <input type="radio" name="grade" value="{{ g }}" required>
+      {{ g }}
+    </label>
+    {% endfor %}
+    <button type="submit" class="btn btn-primary">ادامه</button>
+  </form>
+</section>
+{% endblock %}

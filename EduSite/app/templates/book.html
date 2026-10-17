@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}رزرو جلسه — {{ config.SITE_NAME }}{% endblock %}
+{% block content %}
+<section class="card">
+  <h1>انتخاب زمان</h1>
+  <p>قیمت هر جلسه: <strong>{{ money(price) }} تومان</strong> — موجودی شما: {{ money(balance) }} تومان</p>
+  {% if error %}<p class="error">{{ error }}</p>{% endif %}
+  {% if balance < price %}
+  <p class="error">موجودی کافی نیست؛ ابتدا <a href="{{ url_for('user.wallet') }}">کیف پول</a> را شارژ کنید.</p>
+  {% endif %}
+</section>
+
+{% for day in days %}
+<section class="day">
+  <h2>{{ day.label }}</h2>
+  <div class="slots">
+    {% for s in day.slots %}
+      {% if s.available %}
+      <form method="post" action="{{ url_for('user.book_post') }}" class="inline">
+        <input type="hidden" name="csrf" value="{{ csrf_user }}">
+        <input type="hidden" name="date" value="{{ day.iso }}">
+        <input type="hidden" name="slot" value="{{ s.idx }}">
+        <button type="submit" class="slot available">[ {{ s.label }} ]</button>
+      </form>
+      {% else %}
+      <span class="slot disabled">{{ s.label }}</span>
+      {% endif %}
+    {% endfor %}
+  </div>
+</section>
+{% endfor %}
+{% endblock %}

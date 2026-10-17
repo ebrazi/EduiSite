@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}مدیریت زمان‌ها — پنل مدرس{% endblock %}
+{% block robots %}noindex, nofollow{% endblock %}
+{% block nav %}<a href="{{ url_for('admin.panel') }}">پنل مدرس</a>{% endblock %}
+{% block content %}
+<section class="card">
+  <h1>مدیریت روزها و بازه‌ها</h1>
+  <p class="muted">برای هر روز می‌توانید کل روز را باز/بسته کنید یا هر بازه را جداگانه فعال/غیرفعال کنید.</p>
+</section>
+
+{% for day in days %}
+<section class="day">
+  <div class="day-head">
+    <h2>{{ day.label }}</h2>
+    <div>
+      <form method="post" action="{{ url_for('admin.set_day') }}" class="inline">
+        <input type="hidden" name="csrf" value="{{ csrf }}">
+        <input type="hidden" name="date" value="{{ day.iso }}">
+        <input type="hidden" name="mode" value="open">
+        <button type="submit" class="btn">فعال‌کردن کل روز</button>
+      </form>
+      <form method="post" action="{{ url_for('admin.set_day') }}" class="inline">
+        <input type="hidden" name="csrf" value="{{ csrf }}">
+        <input type="hidden" name="date" value="{{ day.iso }}">
+        <input type="hidden" name="mode" value="close">
+        <button type="submit" class="btn btn-danger">بستن کل روز</button>
+      </form>
+    </div>
+  </div>
+  <div class="slots">
+    {% for s in day.slots %}
+    <form method="post" action="{{ url_for('admin.set_slot') }}" class="inline slot-form">
+      <input type="hidden" name="csrf" value="{{ csrf }}">
+      <input type="hidden" name="date" value="{{ day.iso }}">
+      <input type="hidden" name="slot" value="{{ s.idx }}">
+      <input type="hidden" name="active" value="{{ '0' if s.active else '1' }}">
+      <button type="submit" class="slot {{ 'available' if s.active else 'disabled' }}">
+        {{ s.label }} — {{ 'فعال' if s.active else 'غیرفعال' }}
+      </button>
+    </form>
+    {% endfor %}
+  </div>
+</section>
+{% endfor %}
+{% endblock %}

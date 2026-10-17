@@ -1,0 +1,20 @@
+﻿{% extends "base.html" %}
+{% block title %}صاحب شماره — {{ config.SITE_NAME }}{% endblock %}
+{% block content %}
+<section class="card">
+  <h1>این شماره متعلق به چه کسی است؟</h1>
+  {% if error %}<p class="error">{{ error }}</p>{% endif %}
+  <form method="post" action="{{ url_for('auth.register_relation') }}">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    {% for value, label in choices %}
+    <label class="radio">
+      <input type="radio" name="relation" value="{{ value }}" required>
+      {{ label }}
+    </label>
+    {% endfor %}
+    <label for="name">نام دانش‌آموز</label>
+    <input id="name" name="name" type="text" maxlength="80">
+    <button type="submit" class="btn btn-primary">ادامه</button>
+  </form>
+</section>
+{% endblock %}

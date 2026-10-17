@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}ورود مدرس{% endblock %}
+{% block robots %}noindex, nofollow{% endblock %}
+{% block nav %}{% endblock %}
+{% block content %}
+<section class="card">
+  <h1>ورود مدرس</h1>
+  {% if error %}<p class="error">{{ error }}</p>{% endif %}
+  <form method="post" action="{{ url_for('admin.login') }}">
+    <input type="hidden" name="csrf" value="{{ csrf }}">
+    <label for="password">رمز عبور</label>
+    <input id="password" name="password" type="password" autocomplete="current-password" required>
+    <button type="submit" class="btn btn-primary">ورود</button>
+  </form>
+</section>
+{% endblock %}
