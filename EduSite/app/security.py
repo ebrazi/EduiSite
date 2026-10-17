@@ -70,43 +70,66 @@ def _new_session(kind):
     )
     sess = {"id": sid, "kind": kind, "user_id": None, "csrf": csrf,
             "data": "{}", "expires_at": expires.isoformat()}
-    new_set = getattr(g, "_new_sessions", set())
-    new_set.add(kind)
-    g._new_sessions = new_set
+    created = getattr(g, "_sessions_created", [])
+    created.append(sess)
+    g._sessions_created = created
     return sess
 
 
+def _request_token():
+    """Unique token for the current request context (Werkzeug reuses request objects)."""
+    tok = getattr(g, "_req_tok", None)
+    if tok is None:
+        tok = secrets.token_hex(8)
+        g._req_tok = tok
+    return tok
+
+
 def current_session(kind="user"):
-    """Load (or create) the session for this request, cached on flask.g."""
-    attr = "_session_" + kind
-    sess = getattr(g, attr, None)
+    """Load (or create) the session for this request, cached on flask.g.
+
+    Cache key includes the cookie value so multiple Flask test clients sharing
+    one long-lived app context cannot leak sessions into each other.
+    """
+    sid_cookie = request.cookies.get(_cookie_name(kind)) or ""
+    cache_attr = "_session_%s_%s" % (kind, sid_cookie or ("_pending_%s" % _request_token()))
+    sess = getattr(g, cache_attr, None)
     if sess is not None:
         return sess
+    # Mid-request newly created session (Set-Cookie not yet round-tripped).
+    pending_attr = "_session_%s__pending_%s" % (kind, _request_token())
+    if not sid_cookie:
+        sess = getattr(g, pending_attr, None)
+        if sess is not None:
+            return sess
     conn = db.get_db()
-    sid = request.cookies.get(_cookie_name(kind))
     row = None
-    if sid:
+    if sid_cookie:
         row = conn.execute(
             "SELECT * FROM sessions WHERE id=? AND kind=? AND expires_at > ?",
-            (sid, kind, _now_utc().isoformat()),
+            (sid_cookie, kind, _now_utc().isoformat()),
         ).fetchone()
-    sess = dict(row) if row else _new_session(kind)
-    setattr(g, attr, sess)
+    if row:
+        sess = dict(row)
+        setattr(g, cache_attr, sess)
+    else:
+        sess = _new_session(kind)
+        setattr(g, pending_attr, sess)
+        setattr(g, cache_attr, sess)
     return sess
 
 
 def touch_cookie_headers(response):
-    """Set session cookies for any sessions created during this request."""
-    for kind in g.get("_new_sessions", set()):
-        sess = g.get("_session_" + kind)
-        if sess:
-            response.set_cookie(
-                _cookie_name(kind), sess["id"],
-                max_age=current_app.config["SESSION_TTL_HOURS"] * 3600,
-                httponly=True,
-                secure=not current_app.config["DEV_MODE"],
-                samesite="Lax", path="/",
-            )
+    """Set session cookies only for sessions created during THIS request."""
+    for sess in getattr(g, "_sessions_created", []):
+        kind = sess.get("kind", "user")
+        response.set_cookie(
+            _cookie_name(kind), sess["id"],
+            max_age=current_app.config["SESSION_TTL_HOURS"] * 3600,
+            httponly=True,
+            secure=not current_app.config["DEV_MODE"],
+            samesite="Lax", path="/",
+        )
     return response
 
 
